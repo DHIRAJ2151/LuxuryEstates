@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import os
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse, HttpResponseBadRequest
 import json
@@ -8,6 +8,7 @@ from urllib import request as urlrequest
 from urllib import error as urlerror
 import time
 from urllib.parse import quote
+from groq import Groq
 
 # =========================================================
 # WEB VIEW (No ML Model)
@@ -21,8 +22,11 @@ def predict_price(request):
 # =========================================================
 # HELPER FUNCTIONS 
 # =========================================================
-def get_google_api_key():
-    return os.environ.get('GOOGLE_API_KEY', 'AIzaSyA9S7MDi740WedjuST3iXvRL9U7na3_1Tg').strip()
+def get_groq_api_key():
+    return os.environ.get('GROQ_KEY', '').strip()
+
+# Initialize Groq Client
+client = Groq(api_key=get_groq_api_key())
 
 def duckduckgo_search(query):
     try:
@@ -157,12 +161,8 @@ def house_price_predict(request):
     if not search_context:
         search_context = "Market trends: Use your internal real estate data for this locality as live search results were sparse."
 
-    api_key = get_google_api_key()
-    if not api_key:
-        return JsonResponse({"reply": "API key missing"}, status=500)
-
-    model = "gemini-1.5-flash"
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+    if not get_groq_api_key():
+        return JsonResponse({"reply": "Groq API key missing"}, status=500)
 
     system_prompt = """
     You are a professional Indian real estate valuation expert.
@@ -192,53 +192,31 @@ def house_price_predict(request):
     Calculate realistic price.
     """
 
-    payload = {
-        "system_instruction": {"parts": [{"text": system_prompt}]},
-        "contents": [{"role": "user", "parts": [{"text": user_prompt}]}],
-        "generation_config": {"temperature": 0.3, "max_output_tokens": 200},
-    }
+    try:
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            model="llama3-70b-8192",
+            temperature=0.3,
+            max_tokens=250,
+        )
+        reply = chat_completion.choices[0].message.content.strip()
+        references = [{"title": r["title"], "link": r["link"]} for r in search_results if r.get("link")]
 
-    req = urlrequest.Request(
-        url=url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        },
-        method="POST",
-    )
+        return JsonResponse({
+            "reply": reply or "Could not estimate price.",
+            "references": references
+        })
 
-    for attempt in range(3):
-        try:
-            with urlrequest.urlopen(req, timeout=20) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-                reply = ""
-                candidates = data.get("candidates") or []
-                if candidates:
-                    parts = ((candidates[0] or {}).get("content") or {}).get("parts") or []
-                    reply = " ".join(p.get("text", "") for p in parts).strip()
-
-                references = [{"title": r["title"], "link": r["link"]} for r in search_results if r.get("link")]
-
-                return JsonResponse({
-                    "reply": reply or "Could not estimate price.",
-                    "references": references
-                })
-
-        except urlerror.HTTPError as e:
-            if e.code == 429 and attempt < 2:
-                time.sleep(2 * (attempt + 1))
-                continue
-            break
-        except Exception as e:
-            print(f"Prediction Error: {e}")
-            break
-
-    fallback = build_fallback_reply(property_type, square_footage, bhk, bathrooms, city)
-    return JsonResponse({
-        "reply": f"Note: Using offline estimator due to high demand. {fallback['detail']}",
-        "estimate": fallback["estimate"]
-    })
+    except Exception as e:
+        print(f"Prediction Error: {e}")
+        fallback = build_fallback_reply(property_type, square_footage, bhk, bathrooms, city)
+        return JsonResponse({
+            "reply": f"Note: Using offline estimator due to high demand. {fallback['detail']}",
+            "estimate": fallback["estimate"]
+        })
 
 
 @csrf_exempt
@@ -259,7 +237,9 @@ def chatbot(request):
     if cached:
         return JsonResponse(cached)
 
-    api_key = get_google_api_key()
+    if not get_groq_api_key():
+        return JsonResponse({"reply": "Groq API key missing"}, status=500)
+
     search_results = []
     search_context = ""
 
@@ -272,45 +252,27 @@ def chatbot(request):
             for r in search_results:
                 search_context += f"- {r['snippet']}\n"
 
-    # Always use Gemini but include search context if available
-    pass
-
-    model = "gemini-1.5-flash"
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
-
-    payload = {
-        "contents": [{"role": "user", "parts": [{"text": message + search_context}]}]
-    }
-
-    req = urlrequest.Request(
-        url=url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        },
-        method="POST",
-    )
-
     try:
-        with urlrequest.urlopen(req, timeout=20) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-            reply = ""
-            candidates = data.get("candidates") or []
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": "You are a helpful real estate assistant for the HouseSell platform. Help users with their property queries concisely."},
+                {"role": "user", "content": message + search_context}
+            ],
+            model="llama-3.3-70b-versatile",
+            temperature=0.4,
+            max_tokens=300,
+        )
+        reply = chat_completion.choices[0].message.content.strip()
+        
+        response = {
+            "reply": reply or "I couldn't generate a response.",
+            "references": [{"title": r["title"], "link": r["link"]} for r in search_results if r.get("link")]
+        }
+        set_cache(message, response)
+        return JsonResponse(response)
 
-            if candidates:
-                parts = ((candidates[0] or {}).get("content") or {}).get("parts") or []
-                reply = " ".join(p.get("text", "") for p in parts).strip()
-
-            reply = reply or "I couldn't generate a response."
-            response = {
-                "reply": reply,
-                "references": [{"title": r["title"], "link": r["link"]} for r in search_results if r.get("link")]
-            }
-            set_cache(message, response)
-            return JsonResponse(response)
-
-    except urlerror.HTTPError as e:
+    except Exception as e:
+        print(f"Chatbot Error: {e}")
         fallback = {"reply": "I'm facing high demand right now. Here's what I found:\n\n"}
         for r in search_results:
             fallback["reply"] += f"- {r['snippet']}\n"
@@ -318,8 +280,4 @@ def chatbot(request):
         fallback["references"] = [{"title": r["title"], "link": r["link"]} for r in search_results if r.get("link")]
         set_cache(message, fallback)
         return JsonResponse(fallback)
-
-    except Exception:
-        return JsonResponse({
-            "reply": "Service temporarily unavailable. Please try again."
-        }, status=500)
+        

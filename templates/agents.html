@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Agents • LuxuryEstates{% endblock %}
+{% block content %}
+<style>
+  .agents {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.25rem
+  }
+
+  .agent-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+    overflow: hidden;
+    transition: .2s transform, .2s box-shadow;
+    display: flex;
+    flex-direction: column
+  }
+
+  .agent-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, .12)
+  }
+
+  .agent-card img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    object-position: top
+  }
+
+  .agent-info {
+    padding: 1rem 1rem .25rem
+  }
+
+  .agent-info h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #111
+  }
+
+  .agent-info p {
+    margin: .35rem 0 0;
+    color: #555;
+    font-size: .95rem
+  }
+
+  .agent-actions {
+    padding: 0 1rem 1rem
+  }
+
+  .btn-contact {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: .5rem;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: .65rem 1rem;
+    font-weight: 600;
+    text-decoration: none
+  }
+
+  .btn-contact:hover {
+    background: #000
+  }
+</style>
+<section class="container" style="padding: 2rem 0;">
+  <div class="card-glass">
+    <h2 class="section-title" style="color:#000">Our Top Agents</h2>
+    <div class="agents">
+      <div class="agent-card">
+        <img src="{% static 'harshad.jpg' %}"
+          onerror="this.src='https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&q=80&w=1200'"
+          alt="Harshad Ghadage" />
+        <div class="agent-info">
+          <h4>Harshad Ghadage</h4>
+          <p style="margin-bottom: 0.2rem;">Real Estate Consultant</p>
+          <p style="color: var(--secondary); font-weight: 600;"><i class="fas fa-phone-alt"
+              style="margin-right: 4px; font-size: 0.85rem;"></i> +91 94032 93964</p>
+        </div>
+        <div class="agent-actions">
+          <a class="btn-contact" href="tel:+919403293964"><i class="fas fa-phone"></i> Call Now</a>
+        </div>
+      </div>
+      <div class="agent-card">
+        <img src="{% static 'amitabh.jpg' %}"
+          onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=1200'"
+          alt="Amitabh Shinde" />
+        <div class="agent-info">
+          <h4>Amitabh Shinde</h4>
+          <p style="margin-bottom: 0.2rem;">Luxury Property Expert</p>
+          <p style="color: var(--secondary); font-weight: 600;"><i class="fas fa-phone-alt"
+              style="margin-right: 4px; font-size: 0.85rem;"></i> +91 90226 02930</p>
+        </div>
+        <div class="agent-actions">
+          <a class="btn-contact" href="tel:+919022602930"><i class="fas fa-phone"></i> Call Now</a>
+        </div>
+      </div>
+      <div class="agent-card">
+        <img src="{% static 'yt.jpg' %}"
+          onerror="this.src='https://images.unsplash.com/photo-1618077360395-f3068be8e001?auto=format&fit=crop&q=80&w=1200'"
+          alt="Yash Khatwate" />
+        <div class="agent-info">
+          <h4>Yash Khatwate</h4>
+          <p style="margin-bottom: 0.2rem;">Residential Advisor</p>
+          <p style="color: var(--secondary); font-weight: 600;"><i class="fas fa-phone-alt"
+              style="margin-right: 4px; font-size: 0.85rem;"></i> +91 98810 42225</p>
+        </div>
+        <div class="agent-actions">
+          <a class="btn-contact" href="tel:+919881042225"><i class="fas fa-phone"></i> Call Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

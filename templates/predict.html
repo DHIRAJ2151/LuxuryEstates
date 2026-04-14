@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Price Prediction • LuxuryEstates{% endblock %}
+{% block content %}
+<main style="padding: 4rem 1rem; display: flex; align-items: center;">
+  <section class="container" style="max-width: 800px; width: 100%;">
+    <div class="card" style="padding: 3rem;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2 style="color: var(--primary); font-size: 2.2rem; margin-bottom: 0.5rem;"><i class="fas fa-magic" style="color: var(--accent);"></i> Smart Property Valuation</h2>
+        <p style="color: var(--text-light); font-size: 1.1rem;">Get an instant AI-driven estimate tailored for Indian properties.</p>
+      </div>
+
+      <form id="predictionForm" novalidate style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        
+        <div class="form-group" style="grid-column: span 2;">
+          <label for="property-type"><i class="fas fa-building" style="color: var(--accent);"></i> Property Type</label>
+          <select class="form-control" id="property-type" required>
+            <option value="">Select Category</option>
+            <option value="apartment">Flat / Apartment</option>
+            <option value="villa">Independent House / Villa</option>
+            <option value="builder_floor">Builder Floor</option>
+            <option value="studio">Studio Apartment</option>
+          </select>
+          <div class="invalid-feedback">Please select a property type.</div>
+        </div>
+
+        <div class="form-group" style="grid-column: span 1;">
+          <label for="city"><i class="fas fa-city" style="color: var(--accent);"></i> City</label>
+          <input type="text" class="form-control" id="city" placeholder="Enter city name..." required>
+          <div class="invalid-feedback">Please enter a city.</div>
+        </div>
+
+        <div class="form-group" style="grid-column: span 1;">
+          <label for="locality"><i class="fas fa-map-marker-alt" style="color: var(--accent);"></i> Specific Locality / Area</label>
+          <input type="text" class="form-control" id="locality" placeholder="e.g. Bandra West, Whitefield" required>
+          <div class="invalid-feedback">Please enter the specific locality.</div>
+        </div>
+
+        <div class="form-group" style="grid-column: span 2;">
+          <label for="square-footage"><i class="fas fa-vector-square" style="color: var(--accent);"></i> Super Built-up Area (Sq. Ft.)</label>
+          <input type="number" class="form-control" id="square-footage" min="800" placeholder="Minimum 800 sq ft" required>
+          <div class="invalid-feedback" id="sqftError">Property size must be at least 800 sq ft.</div>
+        </div>
+
+        <div class="form-group" style="grid-column: span 1;">
+          <label for="bhk"><i class="fas fa-bed" style="color: var(--accent);"></i> Configuration (BHK)</label>
+          <select class="form-control" id="bhk" required>
+            <option value="">Select BHK</option>
+            <option value="1">1 BHK</option>
+            <option value="2">2 BHK</option>
+            <option value="3">3 BHK</option>
+            <option value="4">4 BHK</option>
+            <option value="5">5+ BHK Custom</option>
+          </select>
+          <div class="invalid-feedback">Please select BHK configuration.</div>
+        </div>
+
+        <div class="form-group" style="grid-column: span 1;">
+          <label for="bathrooms"><i class="fas fa-bath" style="color: var(--accent);"></i> Bathrooms</label>
+          <select class="form-control" id="bathrooms" required>
+            <option value="">Select Baths</option>
+            <option value="1">1 Bath</option>
+            <option value="2">2 Baths</option>
+            <option value="3">3 Baths</option>
+            <option value="4">4 Baths</option>
+            <option value="5">5+ Baths</option>
+          </select>
+          <div class="invalid-feedback">Please select bathroom count.</div>
+        </div>
+
+        <div style="grid-column: span 2; margin-top: 1rem;">
+          <button type="submit" class="btn btn-primary" id="calculateBtn" style="font-size: 1.1rem; padding: 1rem;">
+            <i class="fas fa-calculator"></i> Calculate Property Value
+          </button>
+        </div>
+      </form>
+
+      <!-- Prediction Output -->
+      <div id="predictionResult" style="display: none; margin-top: 2.5rem; padding-top: 2rem; border-top: 2px dashed #eee; text-align: center; animation: fadeUp 0.6s ease both;">
+        <h4 style="text-transform: uppercase; letter-spacing: 1px; font-size: 0.95rem; color: var(--text-light); margin-bottom: 0.5rem;">Estimated Market Value</h4>
+        <div id="predictedPrice" style="font-size: 3.5rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.5rem;">₹0</div>
+        <div id="predictionDetail" style="color: var(--primary); font-size: 1.05rem; background: #eef2f5; padding: 1rem; border-radius: 8px;">
+          Our AI analysis considers market trends, neighborhood data, and property specifications.
+        </div>
+      </div>
+      
+    </div>
+  </section>
+</main>
+
+{% block extra_js %}
+<script>
+  const form = document.getElementById('predictionForm');
+  const result = document.getElementById('predictionResult');
+  const priceEl = document.getElementById('predictedPrice');
+  const detailEl = document.getElementById('predictionDetail');
+  const btn = document.getElementById('calculateBtn');
+  
+  const sqftInput = document.getElementById('square-footage');
+
+  function formatOutput(data) {
+    if (data.estimate) {
+      priceEl.textContent = data.estimate;
+      detailEl.textContent = data.reply || data.detail || 'This estimate is based on the provided property details.';
+      return;
+    }
+
+    const currencyMatch = (data.reply || '').match(/₹\s?[,0-9CrLakhs\.]+/i);
+    if (currencyMatch) {
+      priceEl.textContent = currencyMatch[0];
+      detailEl.textContent = data.reply.replace(currencyMatch[0], '').trim() || 'Estimated value generated by AI.';
+      return;
+    }
+
+    priceEl.textContent = '- - -';
+    detailEl.textContent = data.reply || 'Unable to calculate an exact number. Try refining your inputs.';
+  }
+
+  function validateField(input) {
+    if (input.id === 'square-footage') {
+      const val = parseInt(input.value);
+      if (isNaN(val) || val < 800) {
+        input.classList.remove('is-valid');
+        input.classList.add('is-invalid');
+        return false;
+      }
+    } else if (input.value.trim() === '') {
+      input.classList.remove('is-valid');
+      input.classList.add('is-invalid');
+      return false;
+    }
+    
+    input.classList.remove('is-invalid');
+    input.classList.add('is-valid');
+    return true;
+  }
+
+  // Bind real-time validation
+  Array.from(form.elements).forEach(el => {
+    if(el.tagName === 'INPUT' || el.tagName === 'SELECT') {
+      el.addEventListener('input', () => validateField(el));
+    }
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    let isValid = true;
+    const inputs = ['property-type', 'city', 'locality', 'square-footage', 'bhk', 'bathrooms'];
+    
+    inputs.forEach(id => {
+      if (!validateField(document.getElementById(id))) {
+        isValid = false;
+      }
+    });
+
+    if (!isValid) {
+      const firstInvalid = form.querySelector('.is-invalid');
+      if(firstInvalid) firstInvalid.focus();
+      return;
+    }
+
+    const payload = {
+      property_type: document.getElementById('property-type').value,
+      city: document.getElementById('city').value,
+      locality: document.getElementById('locality').value,
+      square_footage: document.getElementById('square-footage').value,
+      bhk: document.getElementById('bhk').value,
+      bathrooms: document.getElementById('bathrooms').value,
+    };
+
+    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Calculating...';
+    btn.disabled = true;
+    result.style.display = 'block';
+    
+    // Smooth scroll to result
+    setTimeout(() => {
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+
+    priceEl.textContent = '...';
+    detailEl.textContent = 'Analyzing real estate data...';
+
+    try {
+      const response = await fetch('/predict-price/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      
+      if (data.estimate || data.reply) {
+        formatOutput(data);
+      } else if (!response.ok) {
+        throw new Error(data.error || 'Prediction temporarily unavailable.');
+      } else {
+        formatOutput(data);
+      }
+    } catch (error) {
+      console.error('Prediction error:', error);
+      priceEl.textContent = 'Error';
+      detailEl.innerHTML = `
+        <span style="color: #e74c3c;">
+          <strong>Notice:</strong> ${error.message}
+        </span>
+      `;
+    } finally {
+      btn.innerHTML = '<i class="fas fa-calculator"></i> Calculate Property Value';
+      btn.disabled = false;
+    }
+  });
+</script>
+
+<style>
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+{% endblock %}
+{% endblock %}

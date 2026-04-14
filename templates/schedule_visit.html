@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Schedule a Visit • LuxuryEstates{% endblock %}
+
+{% block content %}
+<main style="padding: 4rem 1rem;">
+  <section class="container" style="max-width: 800px;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h2 style="color: var(--primary); font-size: 2.5rem; margin-bottom: 0.5rem; font-weight: 800;">Experience the Luxury</h2>
+        <p style="color: var(--text-light); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+            Choose a time that works for you. Our expert agents will be there to guide you through every corner of this exquisite property.
+        </p>
+    </div>
+
+    {% if success %}
+    <div class="card" style="background: #e8f8f5; border-left: 5px solid var(--success); padding: 1.5rem; margin-bottom: 2rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem; box-shadow: 0 10px 30px rgba(46, 204, 113, 0.1);">
+        <i class="fas fa-check-circle" style="color: var(--success); font-size: 2rem;"></i>
+        <div>
+            <h4 style="color: #1e8449; margin: 0;">Reservation Confirmed!</h4>
+            <p style="color: #27ae60; margin: 0; font-size: 0.95rem;">{{ success }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if errors %}
+    <div class="card" style="background: #fdf2f2; border-left: 5px solid var(--secondary); padding: 1.5rem; margin-bottom: 2rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(231,76,60,0.1);">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem;">
+            <i class="fas fa-exclamation-triangle" style="color: var(--secondary); font-size: 1.5rem;"></i>
+            <h4 style="color: #c0392b; margin: 0;">Please check the following:</h4>
+        </div>
+        <ul style="margin: 0; padding-left: 2.5rem; color: #e74c3c; font-size: 0.95rem;">
+            {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="card card-glass" style="padding: 0; overflow: hidden; border: 1px solid rgba(255,255,255,0.4);">
+        <!-- Property Header -->
+        {% if form.property_address or form.property_title %}
+        <div style="background: linear-gradient(135deg, var(--primary), var(--dark)); color: white; padding: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <div style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem; font-weight: 700;">Requesting Access To</div>
+            <h3 style="margin: 0; font-size: 1.6rem; font-weight: 700;">{{ form.property_title|default:'Premium Property' }}</h3>
+            <div style="margin-top: 0.5rem; font-size: 0.95rem; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-map-marker-alt"></i> {{ form.property_address|default:'Contact agent for address' }}
+            </div>
+        </div>
+        {% endif %}
+
+        <form method="post" action="" style="padding: 2.5rem;">
+            {% csrf_token %}
+            <input type="hidden" name="property_address" value="{{ form.property_address|default:'' }}">
+            <input type="hidden" name="property_title" value="{{ form.property_title|default:'' }}">
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+                <!-- Personal Info Row -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="name"><i class="fas fa-user" style="font-size: 0.8rem; opacity: 0.6; margin-right: 0.4rem;"></i> Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ form.name|default:'' }}" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="email"><i class="fas fa-envelope" style="font-size: 0.8rem; opacity: 0.6; margin-right: 0.4rem;"></i> Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ form.email|default:'' }}" placeholder="john@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone"><i class="fas fa-phone" style="font-size: 0.8rem; opacity: 0.6; margin-right: 0.4rem;"></i> Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" value="{{ form.phone|default:'' }}" placeholder="+91 98765 43210" required>
+                </div>
+
+                <!-- Schedule Row -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px solid #edf2f7;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="date"><i class="fas fa-calendar-day" style="font-size: 0.8rem; opacity: 0.6; margin-right: 0.4rem;"></i> Preferred Date</label>
+                        <input type="date" class="form-control" id="date" name="date" value="{{ form.date|default:'' }}" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="time"><i class="fas fa-clock" style="font-size: 0.8rem; opacity: 0.6; margin-right: 0.4rem;"></i> Preferred Time</label>
+                        <input type="time" class="form-control" id="time" name="time" value="{{ form.time|default:'' }}" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes"><i class="fas fa-pen-nib" style="font-size: 0.8rem; opacity: 0.6; margin-right: 0.4rem;"></i> Special Requests (Optional)</label>
+                    <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Tell us if you have any specific interests or accessibility requirements...">{{ form.notes|default:'' }}</textarea>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <a href="{% url 'home' %}" class="btn btn-outline" style="flex: 1; padding: 1rem;">Cancel</a>
+                    <button type="submit" class="btn btn-primary btn-hover-effect" style="flex: 2; padding: 1rem;">
+                        <i class="fas fa-paper-plane"></i> Request Private Tour
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div style="text-align: center; margin-top: 2rem; color: var(--text-light); font-size: 0.9rem;">
+        <i class="fas fa-shield-halved"></i> Your data is protected. By submitting, you agree to our <a href="#" style="color: var(--accent); text-decoration: none;">Privacy Policy</a>.
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.querySelector('form');
+  if (form) {
+    form.addEventListener('submit', function() {
+      const btn = this.querySelector('button[type="submit"]');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Arranging Tour...';
+      }
+    });
+  }
+  
+  // Set min date to today
+  const dateInput = document.getElementById('date');
+  if(dateInput){
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+  }
+});
+</script>
+{% endblock %}

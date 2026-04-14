@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Login • LuxuryEstates{% endblock %}
+{% block content %}
+<main class="page-bg light-overlay" style="min-height: 85vh; display: flex; align-items: center; justify-content: center; padding: 3rem 1rem;">
+  <section style="width: 100%; max-width: 450px;">
+    <div class="card" style="position: relative; overflow: hidden;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2 style="color: var(--primary); font-size: 2rem; margin-bottom: 0.5rem;"><i class="fas fa-sign-in-alt"></i> Welcome Back</h2>
+        <p style="color: var(--text-light);">Log in to manage your luxury properties.</p>
+      </div>
+
+      {% if error %}
+        <div style="background: white; border-left: 4px solid var(--secondary); padding: 1rem; border-radius: 4px; box-shadow: var(--shadow); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.8rem;">
+            <i class="fas fa-exclamation-triangle" style="color: var(--secondary); font-size: 1.5rem;"></i>
+            <span style="color: var(--secondary); font-weight: 500;">{{ error }}</span>
+        </div>
+      {% endif %}
+
+      <form method="post" id="loginForm" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="username"><i class="fas fa-user" style="color: var(--accent); margin-right: 0.3rem;"></i> Username</label>
+          <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required autofocus />
+          <div class="invalid-feedback">Please enter your username.</div>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <label for="password" style="margin-bottom: 0;"><i class="fas fa-lock" style="color: var(--accent); margin-right: 0.3rem;"></i> Password</label>
+            <a href="#" style="font-size: 0.85rem; color: var(--accent); text-decoration: none;">Forgot password?</a>
+          </div>
+          <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required />
+          <div class="invalid-feedback">Please enter your password.</div>
+        </div>
+
+        <button class="btn btn-primary" type="submit" id="submitBtn" style="margin-top: 1rem; width: 100%; font-size: 1.1rem;">
+          Login
+        </button>
+      </form>
+      
+      <div class="form-footer" style="margin-top: 2rem;">
+        Don't have an account? <a href="{% url 'signup' %}">Sign up for free</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('loginForm');
+  const uInput = document.getElementById('username');
+  const pInput = document.getElementById('password');
+  const submitBtn = document.getElementById('submitBtn');
+
+  function validateField(input) {
+    if (input.value.trim().length > 0) {
+      input.classList.remove('is-invalid');
+      input.classList.add('is-valid');
+      return true;
+    } else {
+      input.classList.remove('is-valid');
+      input.classList.add('is-invalid');
+      return false;
+    }
+  }
+
+  uInput.addEventListener('input', () => validateField(uInput));
+  pInput.addEventListener('input', () => validateField(pInput));
+
+  form.addEventListener('submit', function(e) {
+    let isValid = true;
+    if (!validateField(uInput)) isValid = false;
+    if (!validateField(pInput)) isValid = false;
+
+    if (!isValid) {
+      e.preventDefault();
+      // Focus first invalid element
+      const firstInvalid = form.querySelector('.is-invalid');
+      if(firstInvalid) firstInvalid.focus();
+    } else {
+      submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Authenticating...';
+      submitBtn.disabled = true;
+    }
+  });
+});
+</script>
+{% endblock %}
+{% endblock %}

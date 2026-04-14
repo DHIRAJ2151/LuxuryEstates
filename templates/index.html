@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxuryEstates | Premium Property Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #e74c3c;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --text: #333;
+            --text-light: #777;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --glass: rgba(255, 255, 255, 0.08);
+            --blur: saturate(180%) blur(8px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: var(--text);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            animation: pageFadeIn .45s ease both;
+        }
+
+        /* Page background images */
+        body.bg-home {
+            background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?q=80&w=1920&auto=format&fit=crop') center/cover fixed no-repeat;
+        }
+
+        body.bg-properties {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1600&q=80') center/cover fixed no-repeat;
+        }
+
+        body.bg-predict {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1600&q=80') center/cover fixed no-repeat;
+        }
+
+        body.bg-agents {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1565623832582-56c2b0c20b33?auto=format&fit=crop&w=1600&q=80') center/cover fixed no-repeat;
+        }
+
+        body.bg-sell {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1600&q=80') center/cover fixed no-repeat;
+        }
+
+        body.bg-contact {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=1600&q=80') center/cover fixed no-repeat;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            color: var(--secondary);
+            font-size: 2rem;
+            margin-right: 0.5rem;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        /* Nav */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            transition: var(--transition);
+            background-image: linear-gradient(currentColor, currentColor);
+            background-position: 0% 100%;
+            background-repeat: no-repeat;
+            background-size: 0% 2px;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary);
+            background-size: 100% 2px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .user-badge i {
+            font-size: 1.4rem;
+            color: var(--secondary);
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-login {
+            background: transparent;
+            color: var(--primary);
+            margin-right: 0;
+        }
+
+        .btn-login:hover {
+            color: var(--secondary);
+        }
+
+        .btn-signup {
+            background: var(--secondary);
+            color: #fff;
+        }
+
+        .btn-signup:hover {
+            background: #c0392b;
+        }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            min-height: 72vh;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .video-bg {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+        }
+
+        .video-bg video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.55) contrast(1.05) saturate(1.1);
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.45));
+            z-index: -1;
+        }
+
+        .hero .container {
+            width: min(92%, 1000px);
+        }
+
+        .hero h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 0.75rem;
+            animation: fadeUp 0.8s ease both;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            max-width: 760px;
+            margin: 0 auto 2rem;
+            opacity: 0.95;
+            animation: fadeUp 1s ease both 0.1s;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 0.8rem;
+            border-radius: 10px;
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            backdrop-filter: var(--blur);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeUp 1.1s ease both 0.15s;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .search-input {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .search-btn {
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            padding: 0 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.35);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 26px rgba(231, 76, 60, 0.45);
+        }
+
+        /* Suggestions dropdown */
+        .suggestions {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 66px;
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+            z-index: 20;
+            display: none;
+            max-height: 260px;
+            overflow: auto;
+        }
+
+        .suggestions.open {
+            display: block;
+        }
+
+        .suggestions .item {
+            padding: 0.6rem 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .suggestions .item:hover {
+            background: #f6f6f6;
+        }
+
+        .suggestions .item i {
+            color: var(--accent);
+        }
+
+        /* Sections */
+        .section-title {
+            text-align: center;
+            margin: 3rem 0 2rem;
+            color: var(--primary);
+        }
+
+        .properties {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .property-card {
+            background: #fff;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            transition: transform .25s ease, box-shadow .25s ease;
+            transform: translateY(0);
+            opacity: 0;
+        }
+
+        .property-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+        }
+
+        .property-img {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .property-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .property-card:hover .property-img img {
+            transform: scale(1.05);
+        }
+
+        .property-details {
+            padding: 1.2rem;
+        }
+
+        .property-price {
+            color: var(--secondary);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .property-address {
+            color: var(--text-light);
+            margin-bottom: 0.8rem;
+        }
+
+        .property-features {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #eee;
+            padding-top: 0.8rem;
+            margin-top: 0.8rem;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .feature i {
+            color: var(--accent);
+        }
+
+        /* Reveal animation state */
+        .reveal-in {
+            opacity: 1 !important;
+            animation: fadeUp .7s ease both;
+        }
+
+        /* Forms & Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: #fff;
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 8px 22px rgba(231, 76, 60, 0.3);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px rgba(231, 76, 60, 0.45);
+        }
+
+        .btn-secondary {
+            background: var(--accent);
+            color: #fff;
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(52, 152, 219, 0.25);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(52, 152, 219, 0.35);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        /* Prediction */
+        .prediction-section {
+            background: var(--light);
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .prediction-form {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: var(--shadow);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: #fff;
+            padding: 2.5rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.6rem;
+        }
+
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column ul li a:hover {
+            color: #fff;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.8rem;
+        }
+
+        .social-links a {
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Stats */
+        .stats {
+            background: #fff;
+            padding: 2rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.2rem;
+            text-align: center;
+        }
+
+        .stat {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 1.2rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        /* Scroll To Top */
+        #toTopBtn {
+            position: fixed;
+            right: 20px;
+            bottom: 22px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 12px 28px rgba(231, 76, 60, 0.35);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1200;
+            transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+        }
+
+        #toTopBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 36px rgba(231, 76, 60, 0.45);
+        }
+
+        /* Enhanced interactive styles */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        /* Interactive elements */
+        .interactive-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .interactive-card:hover {
+            transform: translateY(-8px) rotate(1deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-hover-effect {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-hover-effect:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn-hover-effect:hover:after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 1;
+            }
+
+            20% {
+                transform: scale(25, 25);
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(40, 40);
+            }
+        }
+
+        /* Enhanced search box */
+        .search-box {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            transform: scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Property image overlay effect */
+        .property-img {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .property-actions {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 0.6rem;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .property-card:hover .property-actions {
+            opacity: 1;
+        }
+
+        .property-action-btn {
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .property-action-btn:hover {
+            transform: scale(1.1) translateY(-2px);
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        /* Enhanced stats section */
+        .stat {
+            transition: transform 0.3s ease;
+        }
+
+        .stat:hover {
+            transform: translateY(-5px);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        .stat:hover .stat-value,
+        .stat:hover .stat-label {
+            color: white;
+        }
+
+        /* Floating elements */
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-slow {
+            animation: float 8s ease-in-out infinite;
+        }
+
+        /* Enhanced form inputs */
+        .form-control {
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom cursor for interactive elements */
+        .interactive-cursor {
+            cursor: default;
+        }
+
+        /* Enhanced navigation */
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links li:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links li:hover:after {
+            width: 100%;
+        }
+
+        /* Enhanced hero section */
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0) translateX(-50%);
+            }
+
+            40% {
+                transform: translateY(-20px) translateX(-50%);
+            }
+
+            60% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+        }
+
+        /* Price prediction result display */
+        .prediction-result {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .prediction-result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Interactive map placeholder */
+        .interactive-map {
+            height: 300px;
+            background: #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .map-marker {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: var(--secondary);
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+
+        .map-marker:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        /* Enhanced footer */
+        .footer-column h3 {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero h2 {
+                font-size: 2.1rem;
+            }
+
+            .hero p {
+                font-size: 1.05rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                gap: 0.6rem;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            nav {
+                width: 100%;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0.8rem 0;
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .auth-buttons {
+                display: none;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .suggestions {
+                right: 0;
+            }
+
+            .properties {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Dark mode theme */
+        .dark-theme body {
+            background-color: #0f1115;
+            color: #e6e6e6;
+        }
+
+        .dark-theme header {
+            background-color: rgba(22, 24, 29, 0.85);
+            backdrop-filter: var(--blur);
+        }
+
+        .dark-theme .nav-links a {
+            color: #ddd;
+        }
+
+        .dark-theme .nav-links a:hover {
+            color: #fff;
+        }
+
+        .dark-theme .hero::after {
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.6));
+        }
+
+        .dark-theme .search-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .dark-theme .search-input {
+            background: rgba(28, 31, 38, 0.9);
+            color: #f0f0f0;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-theme .properties .property-card,
+        .dark-theme .prediction-form,
+        .dark-theme .card,
+        .dark-theme .agent-card,
+        .dark-theme .modal-content {
+            background: #171a21;
+            color: #e6e6e6;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .dark-theme .stat {
+            background: #161922;
+        }
+
+        .dark-theme .footer-column ul li a {
+            color: #bbb;
+        }
+
+        .dark-theme .footer-column ul li a:hover {
+            color: #fff;
+        }
+
+        .dark-theme .suggestions {
+            background: #1c2029;
+            border-color: #2a2f3a;
+        }
+
+        .dark-theme .suggestions .item:hover {
+            background: #222735;
+        }
+    </style>
+</head>
+
+<body class="bg-home interactive-cursor">
+    <!-- Header -->
+    {% include 'partials/nav.html' %}
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="video-bg" aria-hidden="true">
+            <video autoplay muted loop playsinline
+                poster="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1600&q=80">
+                <source src="https://videos.pexels.com/video-files/3139384/3139384-uhd_2560_1440_24fps.mp4"
+                    type="video/mp4">
+            </video>
+        </div>
+        <div class="container hero-content">
+            <h2>Find Your Dream Home</h2>
+            <p>Discover the perfect property with our advanced search and AI-powered price prediction</p>
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Enter city, address, or PIN code">
+                <div id="searchSuggestions" class="suggestions" role="listbox" aria-label="Search suggestions"></div>
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <i class="fas fa-chevron-down" style="color: white; font-size: 2rem;"></i>
+        </div>
+    </section>
+
+
+    <!-- Featured Properties -->
+    <section class="container" style="padding-top: 3rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
+            <div>
+                <h2 class="section-title" style="margin: 0; text-align: left;">Featured Properties</h2>
+                <p style="color: var(--text-light); margin-top: 5px;">Our latest elite listings across the country</p>
+            </div>
+            <a href="{% url 'properties' %}"
+                style="color: var(--secondary); text-decoration: none; font-weight: 600;">View All <i
+                    class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="properties">
+            {% for fp in featured_properties %}
+            <div class="property-card interactive-card">
+                <div class="property-img">
+                    {% if fp.image_url %}
+                    <img src="{{ fp.image_url }}" alt="{{ fp.title }}">
+                    {% else %}
+                    <img src="{% static 'house1.jpg' %}"
+                        onerror="this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=784&q=80'"
+                        alt="{{ fp.title }}">
+                    {% endif %}
+                    <div class="property-actions">
+                        <button class="property-action-btn quick-view" data-title="{{ fp.title }}"
+                            data-price="₹ {{ fp.price|floatformat:0 }}" data-address="{{ fp.address }}, {{ fp.city }}"
+                            data-desc="{{ fp.description|truncatechars:100 }}"
+                            data-img="{% if fp.image_url %}{{ fp.image_url }}{% else %}{% static 'house1.jpg' %}{% endif %}"
+                            title="Quick View"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="property-details">
+                    <h3 class="property-price">₹ {{ fp.price|floatformat:0 }}</h3>
+                    <p class="property-address">{{ fp.address }}, {{ fp.city }} {{ fp.zip }}</p>
+                    <p style="font-weight: 600; color: var(--primary); margin-bottom: 0.5rem;">{{ fp.title }}</p>
+                    <div class="property-features">
+                        <div class="feature"><i class="fas fa-bed"></i><span>{{ fp.bedrooms }} Beds</span></div>
+                        <div class="feature"><i class="fas fa-bath"></i><span>{{ fp.bathrooms }} Baths</span></div>
+                        <div class="feature"><i class="fas fa-ruler-combined"></i><span>{{ fp.sqft }} sqft</span></div>
+                    </div>
+                    <button class="btn btn-secondary btn-hover-effect quick-view" data-title="{{ fp.title }}"
+                        data-price="₹ {{ fp.price|floatformat:0 }}" data-address="{{ fp.address }}, {{ fp.city }}"
+                        data-desc="{{ fp.description }}"
+                        data-img="{% if fp.image_url %}{{ fp.image_url }}{% else %}{% static 'house1.jpg' %}{% endif %}">Quick
+                        View</button>
+                </div>
+            </div>
+            {% empty %}
+            <div
+                style="grid-column: 1 / -1; text-align: center; padding: 4rem; background: rgba(255,255,255,0.5); border-radius: 12px; border: 2px dashed #ddd;">
+                <i class="fas fa-home" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem;"></i>
+                <p style="color: var(--text-light);">No featured listings available at the moment.</p>
+                <p style="color: var(--text-light);">Be the first to list your property and reach thousands of buyers
+                    looking for their dream home.</p>
+                <br>
+                <a href="{% url 'sell' %}" class="btn btn-secondary" style="margin-top: 1rem;">List Your
+                    Property</a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+
+    <!-- Interactive Map Section (disabled) -->
+    <section class="container" style="margin: 4rem auto; display:none;">
+        <h2 class="section-title">Find Properties Near You</h2>
+        <div class="interactive-map" id="interactiveMap"></div>
+    </section>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content interactive-card">
+            <div class="modal-header">
+                <h2>Login to Your Account</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-hover-effect">Login</button>
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="#">Sign up</a></p>
+                    <p><a href="#">Forgot your password?</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick View Modal -->
+    <div class="modal" id="quickViewModal" aria-hidden="true" aria-labelledby="qvTitle" role="dialog">
+        <div class="modal-content interactive-card">
+            <div class="modal-header">
+                <h2 id="qvTitle">Property Preview</h2>
+                <button class="close-modal" data-close="quickView">&times;</button>
+            </div>
+            <div class="qv-body">
+                <img id="qvImage" alt="Property image"
+                    style="width:100%;height:220px;object-fit:cover;border-radius:8px;margin-bottom:0.8rem;" />
+                <h3 id="qvPrice" style="color: var(--secondary); margin: 0.4rem 0;">₹ 0</h3>
+                <p id="qvAddress" style="color: var(--text-light); margin-bottom: 0.6rem;">Address</p>
+                <p id="qvDesc">Description</p>
+                <div style="display:flex; gap:.5rem; margin-top:1rem;">
+                    <button class="btn btn-secondary btn-hover-effect" id="qvContact">Contact Agent</button>
+                    <button class="btn btn-primary btn-hover-effect" id="qvSchedule">Schedule Visit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Visit Modal -->
+    <div class="modal" id="scheduleModal" aria-hidden="true" aria-labelledby="svTitle" role="dialog">
+        <div class="modal-content interactive-card">
+            <div class="modal-header">
+                <h2 id="svTitle" style="color: white;">Schedule a Visit</h2>
+                <button class="close-modal" data-close="schedule">&times;</button>
+            </div>
+            <form id="scheduleForm" class="qv-body" style="display:block">
+                <div class="form-group">
+                    <label for="svName">Full Name</label>
+                    <input type="text" class="form-control" id="svName" name="name" placeholder="Your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="svEmail">Email</label>
+                    <input type="email" class="form-control" id="svEmail" name="email" placeholder="you@example.com"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="svPhone">Phone</label>
+                    <input type="tel" class="form-control" id="svPhone" name="phone" placeholder="+1 234 567 8900"
+                        required>
+                </div>
+                <div class="form-group" style="display:flex; gap:.6rem;">
+                    <div style="flex:1">
+                        <label for="svDate">Preferred Date</label>
+                        <input type="date" class="form-control" id="svDate" name="date" required>
+                    </div>
+                    <div style="flex:1">
+                        <label for="svTime">Preferred Time</label>
+                        <input type="time" class="form-control" id="svTime" name="time" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="svNotes">Notes (optional)</label>
+                    <textarea class="form-control" id="svNotes" name="notes" placeholder="Any additional details"
+                        rows="3"></textarea>
+                </div>
+                <div class="form-group" style="display:flex; gap:.5rem; justify-content:flex-end;">
+                    <button type="button" class="btn btn-secondary close-modal" data-close="schedule">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-hover-effect">Confirm Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    {% include 'partials/chatbot.html' %}
+    {% include 'partials/footer.html' %}
+
+    <script>
+        // Navbar toggle
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        if (navToggle && navLinks) {
+            navToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('open');
+            });
+        }
+
+        // Header shadow on scroll for subtle depth
+        const headerEl = document.querySelector('header');
+        if (headerEl) {
+            const setShadow = () => {
+                if (window.scrollY > 6) {
+                    headerEl.style.boxShadow = '0 8px 20px rgba(0,0,0,0.08)';
+                    headerEl.style.backgroundColor = 'rgba(255,255,255,0.98)';
+                    headerEl.style.backdropFilter = 'saturate(180%) blur(8px)';
+                } else {
+                    headerEl.style.boxShadow = '';
+                    headerEl.style.backgroundColor = '';
+                    headerEl.style.backdropFilter = '';
+                }
+            };
+            setShadow();
+            window.addEventListener('scroll', setShadow, { passive: true });
+        }
+
+        // Modal functionality (supports multiple modals)
+        (() => {
+            const loginBtn = document.getElementById('loginBtn');
+            const signupBtn = document.getElementById('signupBtn');
+            const loginModal = document.getElementById('loginModal');
+            const quickViewModal = document.getElementById('quickViewModal');
+            const scheduleModal = document.getElementById('scheduleModal');
+
+            const openModal = (modal) => {
+                if (!modal) return;
+                modal.style.display = 'flex';
+            };
+            const closeModal = (modal) => {
+                if (!modal) return;
+                modal.style.display = 'none';
+            };
+
+            if (loginBtn && loginModal) loginBtn.addEventListener('click', () => openModal(loginModal));
+            if (signupBtn && loginModal) signupBtn.addEventListener('click', () => openModal(loginModal));
+
+            // Close buttons
+            document.querySelectorAll('.close-modal').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const which = btn.getAttribute('data-close');
+                    if (which === 'quickView') return closeModal(quickViewModal);
+                    if (which === 'schedule') return closeModal(scheduleModal);
+                    return closeModal(loginModal);
+                });
+            });
+
+            // Backdrop click to close whichever modal was targeted
+            window.addEventListener('click', (e) => {
+                if (e.target === loginModal) closeModal(loginModal);
+                if (e.target === quickViewModal) closeModal(quickViewModal);
+                if (e.target === scheduleModal) closeModal(scheduleModal);
+            });
+        })();
+
+        // Scroll reveal animations
+        (() => {
+            const revealTargets = document.querySelectorAll('.property-card, .agent-card, .card, .prediction-form');
+            if (!('IntersectionObserver' in window) || revealTargets.length === 0) return;
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('reveal-in');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '50px' });
+            revealTargets.forEach((el, i) => {
+                // slight stagger via animationDelay when available
+                el.style.animationDelay = `${Math.min(i * 0.06, 0.4)}s`;
+                observer.observe(el);
+            });
+        })();
+
+        // Dark mode toggle with persistence
+        (() => {
+            const toggleBtn = document.getElementById('themeToggle');
+            const root = document.documentElement; // toggling class at root
+            const KEY = 'luxuryEstates.theme';
+
+            const applyTheme = (mode) => {
+                const isDark = mode === 'dark';
+                root.classList.toggle('dark-theme', isDark);
+                const icon = toggleBtn?.querySelector('i');
+                if (icon) icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            };
+
+            const saved = localStorage.getItem(KEY);
+            if (saved === 'dark' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                applyTheme('dark');
+            } else {
+                applyTheme('light');
+            }
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    const next = root.classList.contains('dark-theme') ? 'light' : 'dark';
+                    localStorage.setItem(KEY, next);
+                    applyTheme(next);
+                });
+            }
+        })();
+
+        // Search suggestions for hero search
+        (() => {
+            const input = document.querySelector('.hero .search-input');
+            const box = document.getElementById('searchSuggestions');
+            if (!input || !box) return;
+
+            const data = ['Mumbai, MH', 'Delhi, DL', 'Bengaluru, KA', 'Hyderabad, TS', 'Chennai, TN', 'Kolkata, WB', 'Pune, MH', 'Gurugram, HR', 'Noida, UP', 'Ahmedabad, GJ'];
+            let activeIndex = -1;
+
+            const render = (items) => {
+                box.innerHTML = '';
+                items.slice(0, 6).forEach((text, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'item';
+                    div.setAttribute('role', 'option');
+                    div.innerHTML = `<i class="fas fa-location-dot"></i><span>${text}</span>`;
+                    div.addEventListener('click', () => {
+                        input.value = text;
+                        box.classList.remove('open');
+                        activeIndex = -1;
+                    });
+                    box.appendChild(div);
+                });
+                box.classList.toggle('open', items.length > 0);
+            };
+
+            const filter = (q) => data.filter((c) => c.toLowerCase().includes(q.toLowerCase()));
+
+            input.addEventListener('input', () => {
+                const q = input.value.trim();
+                activeIndex = -1;
+                if (q.length < 2) { box.classList.remove('open'); box.innerHTML = ''; return; }
+                render(filter(q));
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (!box.classList.contains('open')) return;
+                const items = Array.from(box.querySelectorAll('.item'));
+                if (['ArrowDown', 'ArrowUp', 'Enter', 'Escape'].includes(e.key)) e.preventDefault();
+                if (e.key === 'ArrowDown') {
+                    activeIndex = (activeIndex + 1) % items.length;
+                } else if (e.key === 'ArrowUp') {
+                    activeIndex = (activeIndex - 1 + items.length) % items.length;
+                } else if (e.key === 'Enter') {
+                    if (items[activeIndex]) { items[activeIndex].click(); }
+                } else if (e.key === 'Escape') {
+                    box.classList.remove('open');
+                }
+                items.forEach((el, i) => el.style.background = i === activeIndex ? '#f0f3f6' : '');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!box.contains(e.target) && e.target !== input) box.classList.remove('open');
+            });
+        })();
+
+        // Quick View modal: populate and open
+        (() => {
+            const quickBtns = document.querySelectorAll('.quick-view');
+            const modal = document.getElementById('quickViewModal');
+            if (!modal || quickBtns.length === 0) return;
+            const img = modal.querySelector('#qvImage');
+            const price = modal.querySelector('#qvPrice');
+            const address = modal.querySelector('#qvAddress');
+            const desc = modal.querySelector('#qvDesc');
+            const contact = modal.querySelector('#qvContact');
+            const schedule = modal.querySelector('#qvSchedule');
+
+            quickBtns.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    img.src = btn.getAttribute('data-img') || '';
+                    price.textContent = btn.getAttribute('data-price') || '';
+                    address.textContent = btn.getAttribute('data-address') || '';
+                    desc.textContent = btn.getAttribute('data-desc') || '';
+                    modal.style.display = 'flex';
+                });
+            });
+
+            const toast = (msg) => {
+                const t = document.createElement('div');
+                t.textContent = msg;
+                Object.assign(t.style, {
+                    position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
+                    background: '#3498db', color: '#fff', padding: '10px 14px', borderRadius: '8px',
+                    boxShadow: '0 8px 22px rgba(52,152,219,0.35)', zIndex: 2200, opacity: '0',
+                    transition: 'opacity .25s ease, transform .25s ease'
+                });
+                document.body.appendChild(t);
+                requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(-4px)'; });
+                setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%)'; setTimeout(() => t.remove(), 250); }, 1600);
+            };
+
+            contact?.addEventListener('click', () => toast('Agent will contact you shortly.'));
+            schedule?.addEventListener('click', () => {
+                // Navigate to dedicated schedule page with prefilled address
+                const addr = (address?.textContent || '').trim();
+                const params = new URLSearchParams();
+                if (addr) params.set('address', addr);
+                const url = "{% url 'schedule_visit' %}" + (params.toString() ? `?${params.toString()}` : '');
+                window.location.href = url;
+            });
+        })();
+
+        // Schedule form submission (frontend demo)
+        (() => {
+            const form = document.getElementById('scheduleForm');
+            const modal = document.getElementById('scheduleModal');
+            if (!form || !modal) return;
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = (document.getElementById('svName').value || '').trim();
+                const email = (document.getElementById('svEmail').value || '').trim();
+                const phone = (document.getElementById('svPhone').value || '').trim();
+                const date = (document.getElementById('svDate').value || '').trim();
+                const time = (document.getElementById('svTime').value || '').trim();
+                if (!name || !email || !phone || !date || !time) {
+                    return alert('Please fill in all required fields.');
+                }
+                // Close the modal safely without relying on outer-scope helper
+                modal.style.display = 'none';
+                showToast('Your visit has been scheduled! We will confirm shortly.');
+            });
+        })();
+
+        // Stats counters
+        (() => {
+            const counters = document.querySelectorAll('.stat-value[data-count]');
+            if (counters.length === 0 || !('IntersectionObserver' in window)) return;
+            const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+            const animateCount = (el, to, duration = 1400) => {
+                const start = 0;
+                const startTime = performance.now();
+                const step = (now) => {
+                    const p = Math.min((now - startTime) / duration, 1);
+                    const val = Math.floor(start + (to - start) * easeOutCubic(p));
+                    el.textContent = val.toLocaleString();
+                    if (p < 1) requestAnimationFrame(step);
+                };
+                requestAnimationFrame(step);
+            };
+            const ob = new IntersectionObserver((entries, obs) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const target = parseInt(el.getAttribute('data-count') || '0', 10);
+                        animateCount(el, target);
+                        obs.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.4 });
+            counters.forEach((c) => ob.observe(c));
+        })();
+
+        // Scroll-to-top button
+        (() => {
+            const btn = document.createElement('button');
+            btn.id = 'toTopBtn';
+            btn.innerHTML = '<i class="fas fa-arrow-up"></i>';
+            document.body.appendChild(btn);
+            const toggle = () => {
+                if (window.scrollY > 300) {
+                    btn.style.display = 'flex';
+                    btn.style.opacity = '1';
+                } else {
+                    btn.style.opacity = '0';
+                    setTimeout(() => { if (window.scrollY <= 300) btn.style.display = 'none'; }, 200);
+                }
+            };
+            toggle();
+            window.addEventListener('scroll', toggle, { passive: true });
+            btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        })();
+
+        // Subtle hero parallax effect
+        (() => {
+            const hero = document.querySelector('.hero');
+            const content = hero?.querySelector('.container');
+            if (!hero || !content) return;
+            const onScroll = () => {
+                const rect = hero.getBoundingClientRect();
+                const h = Math.max(rect.height, 1);
+                const progress = Math.min(Math.max(-rect.top / h, 0), 1); // 0 at top, 1 when scrolled past
+                const translate = progress * 20; // up to 20px
+                content.style.transform = `translateY(${translate}px)`;
+            };
+            onScroll();
+            window.addEventListener('scroll', onScroll, { passive: true });
+        })();
+
+        // Enhanced interactive functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            // Price prediction form handling
+            const predictionForm = document.getElementById('predictionForm');
+            const predictionResult = document.getElementById('predictionResult');
+            const predictedPrice = document.getElementById('predictedPrice');
+            // Search redirect
+            const searchInput = document.querySelector('.hero .search-input');
+            const searchBtn = document.querySelector('.hero .search-btn');
+            const goSearch = () => {
+                const q = (searchInput?.value || '').trim();
+                const url = `{% url 'properties' %}` + (q ? `?q=${encodeURIComponent(q)}` : '');
+                window.location.href = url;
+            };
+            searchBtn?.addEventListener('click', goSearch);
+            searchInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); goSearch(); } });
+
+            if (predictionForm) {
+                predictionForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    // Simulate calculation delay
+                    predictionResult.classList.remove('show');
+
+                    setTimeout(() => {
+                        // Generate a realistic price based on inputs
+                        const sqft = parseInt(document.getElementById('square-footage').value) || 2000;
+                        const beds = parseInt(document.getElementById('bedrooms').value) || 3;
+                        const baths = parseInt(document.getElementById('bathrooms').value) || 2;
+
+                        const basePrice = sqft * 300 + beds * 15000 + baths * 10000;
+                        const randomFactor = 0.8 + (Math.random() * 0.4); // 0.8 to 1.2
+                        const calculatedPrice = Math.round(basePrice * randomFactor);
+
+                        // Format INR with Indian numbering
+                        predictedPrice.textContent = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(calculatedPrice * 83);
+                        predictionResult.classList.add('show');
+                    }, 1000);
+                });
+            }
+
+            // Interactive map functionality
+            // Map disabled
+
+
+            // Enhanced property card interactions
+            const propertyCards = document.querySelectorAll('.property-card');
+            propertyCards.forEach(card => {
+                card.addEventListener('mouseenter', function () {
+                    this.style.zIndex = '10';
+                });
+
+                card.addEventListener('mouseleave', function () {
+                    this.style.zIndex = '1';
+                });
+            });
+
+            // Favorite button functionality
+            const favoriteButtons = document.querySelectorAll('.property-action-btn:first-child');
+            favoriteButtons.forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    this.classList.toggle('active');
+                    if (this.classList.contains('active')) {
+                        this.style.color = '#e74c3c';
+                        // Show a subtle notification
+                        showToast('Added to favorites!');
+                    } else {
+                        this.style.color = '';
+                        showToast('Removed from favorites!');
+                    }
+                });
+            });
+        });
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 4px;
+                z-index: 10000;
+                opacity: 0;
+                transition: opacity 0.3s;
+            `;
+
+            document.body.appendChild(toast);
+
+            // Fade in
+            setTimeout(() => {
+                toast.style.opacity = '1';
+            }, 10);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+    <script src="{% static 'script.js' %}"></script>
+    <script>
+        if (typeof initChatbot === 'function') { try { initChatbot(); } catch (e) { } }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,168 @@
+<style>
+    .chatbot-fab { position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; border-radius: 50%; border: none; background: #e74c3c; color: #fff; box-shadow: 0 6px 18px rgba(0,0,0,0.2); cursor: pointer; display: grid; place-items: center; transition: transform .15s ease, box-shadow .15s ease; animation: pulse 2s infinite; z-index: 9999; }
+    .chatbot-fab:hover { transform: scale(1.06); box-shadow: 0 10px 24px rgba(0,0,0,0.25); }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.5);} 70% { box-shadow: 0 0 0 12px rgba(231, 76, 60, 0);} 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);} }
+
+    .chatbot-panel { position: fixed; bottom: 84px; right: 20px; width: 340px; max-height: 480px; display: none; flex-direction: column; background: #fff; border: 1px solid #eee; border-radius: 12px; box-shadow: 0 12px 28px rgba(0,0,0,0.18); overflow: hidden; z-index: 9999; }
+    .chatbot-header { background: #2c3e50; color: #fff; padding: 12px 14px; font-weight: 600; display:flex; justify-content:space-between; align-items:center;}
+    .chatbot-messages { padding: 12px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; max-height:320px; }
+    .chatbot-inputbar { display: flex; gap: 8px; padding: 10px; border-top: 1px solid #eee; }
+    .chatbot-input { flex: 1; border: 1px solid #ddd; border-radius: 6px; padding: 10px; font-size: 14px; }
+    .chatbot-send { background: #e74c3c; color: #fff; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    .chatbot-bubble { padding: 8px 10px; border-radius: 10px; max-width: 85%; }
+    .chatbot-bubble.user { background: #ecf0f1; align-self: flex-end; }
+    .chatbot-bubble.bot { background: #f6f6f6; align-self: flex-start; }
+    .chatbot-bubble.bot code { background: #eee; padding: 2px 4px; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .chatbot-bubble.bot a { color: #3498db; text-decoration: underline; }
+    .chatbot-bubble.bot strong { font-weight: 700; }
+    .chatbot-bubble.bot em { font-style: italic; }
+    .chatbot-bubble.bot .chatbot-list { margin: 6px 0 6px 18px; padding: 0; }
+    .chatbot-bubble.bot .chatbot-list li { margin: 4px 0; }
+    .chatbot-typing { display: flex; gap: 6px; align-self: flex-start; padding: 8px 10px; }
+    .chatbot-typing span { width: 6px; height: 6px; background: #ccc; display: inline-block; border-radius: 50%; animation: blink 1s infinite; }
+    .chatbot-typing span:nth-child(2) { animation-delay: .15s; }
+    .chatbot-typing span:nth-child(3) { animation-delay: .3s; }
+    
+    .chatbot-references { margin-top: 5px; font-size: 0.85rem; border-top: 1px solid #ddd; padding-top: 5px; }
+    .chatbot-reference-item { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px; }
+    
+    @keyframes blink { 0% { opacity: .2 } 50% { opacity: 1 } 100% { opacity: .2 } }
+</style>
+
+<div id="chatbot-container" style="display:none;">
+    <button class="chatbot-fab" id="chatbotFabBtn" title="Chat with us">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3C6.477 3 2 6.94 2 11.8c0 2.41 1.16 4.58 3.06 6.16-.09.92-.49 2.36-1.7 3.72-.21.24-.06.64.25.64 1.86-.04 3.42-.67 4.53-1.3 1.18.36 2.45.56 3.76.56 5.523 0 10-3.94 10-8.8S17.523 3 12 3Z" fill="#fff"/>
+        </svg>
+    </button>
+
+    <div class="chatbot-panel" id="chatbotPanelWindow">
+        <div class="chatbot-header">
+            <span><i class="fas fa-robot"></i> Luxury Concierge</span>
+            <button id="chatbotCloseBtn" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">&times;</button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessagesBox">
+            <div class="chatbot-bubble bot">
+                Hello! I'm your LuxuryEstates automated assistant. How can I help you discover your perfect home today?
+            </div>
+        </div>
+        <div class="chatbot-inputbar">
+            <input type="text" class="chatbot-input" id="chatbotTextInput" placeholder="Type a message...">
+            <button class="chatbot-send" id="chatbotSendBtn">Send</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('chatbot-container');
+    container.style.display = 'block';
+
+    const btn = document.getElementById('chatbotFabBtn');
+    const panel = document.getElementById('chatbotPanelWindow');
+    const closeBtn = document.getElementById('chatbotCloseBtn');
+    const messages = document.getElementById('chatbotMessagesBox');
+    const input = document.getElementById('chatbotTextInput');
+    const sendBtn = document.getElementById('chatbotSendBtn');
+
+    btn.addEventListener('click', () => {
+        panel.style.display = panel.style.display === 'none' || panel.style.display === '' ? 'flex' : 'none';
+        if (panel.style.display === 'flex') input.focus();
+    });
+
+    closeBtn.addEventListener('click', () => {
+        panel.style.display = 'none';
+    });
+
+    function escapeHtml(str) {
+        return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function renderMarkdown(src) {
+        let s = escapeHtml(src || '');
+        s = s.replace(/\s\*\s+(?=\*\*)/g, '\n* ');
+        const lines = s.split(/\n/);
+        const out = [];
+        let inList = false;
+        for (let line of lines) {
+            if (/^\s*\*\s+/.test(line) || /^\s*-\s+/.test(line)) {
+                if (!inList) { out.push('<ul class="chatbot-list">'); inList = true; }
+                line = line.replace(/^\s*[\*-]\s+/, '');
+                out.push('<li>' + line + '</li>');
+            } else {
+                if (inList) { out.push('</ul>'); inList = false; }
+                out.push(line);
+            }
+        }
+        if (inList) out.push('</ul>');
+        s = out.join('<br>');
+        s = s.replace(/\[([^\]]+)\]\((https?:[^\s)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+        s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+        s = s.replace(/(\*\*|__)(.*?)\1/g, '<strong>$2</strong>');
+        s = s.replace(/(\*|_)([^\*_][\s\S]*?)\1/g, '<em>$2</em>');
+        return s;
+    }
+
+    function appendBubble(text, from, references = []) {
+        const bubble = document.createElement('div');
+        bubble.className = from === 'user' ? 'chatbot-bubble user' : 'chatbot-bubble bot';
+        
+        let contentHtml = from === 'bot' ? renderMarkdown(text) : escapeHtml(text);
+        
+        if (from === 'bot' && references && references.length > 0) {
+            let refsHtml = '<div class="chatbot-references"><strong>Sources:</strong><br>';
+            references.forEach(r => {
+                refsHtml += `<a href="${escapeHtml(r.link)}" class="chatbot-reference-item" target="_blank" title="${escapeHtml(r.title)}"><i class="fas fa-link"></i> ${escapeHtml(r.title)}</a>`;
+            });
+            refsHtml += '</div>';
+            contentHtml += refsHtml;
+        }
+
+        bubble.innerHTML = contentHtml;
+        messages.appendChild(bubble);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function showTyping() {
+        const wrap = document.createElement('div');
+        wrap.className = 'chatbot-typing';
+        wrap.innerHTML = '<span></span><span></span><span></span>';
+        messages.appendChild(wrap);
+        messages.scrollTop = messages.scrollHeight;
+        return wrap;
+    }
+
+    async function sendMessage() {
+        const text = input.value.trim();
+        if (!text) return;
+        appendBubble(text, 'user');
+        input.value = '';
+        
+        const typing = showTyping();
+        
+        const formData = new FormData();
+        formData.append('message', text);
+
+        try {
+            const res = await fetch("{% url 'predictor:chatbot' %}", {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                body: formData
+            });
+            const data = await res.json();
+            typing.remove();
+            
+            const replyMsg = data.reply || data.error || 'No response generated.';
+            appendBubble(replyMsg, 'bot', data.references || []);
+        } catch (e) {
+            typing.remove();
+            appendBubble('Error contacting assistant.', 'bot');
+        }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+});
+</script>

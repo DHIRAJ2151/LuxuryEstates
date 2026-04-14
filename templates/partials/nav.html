@@ -1,0 +1,41 @@
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo floating-slow">
+                <i class="fas fa-home"></i>
+                <h1>LuxuryEstates</h1>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'properties' %}">Properties</a></li>
+                    <li><a href="{% url 'predictor:predict_price' %}">Price Prediction</a></li>
+                    <li><a href="{% url 'agents' %}">Agents</a></li>
+                    <li><a href="{% url 'sell' %}">Sell</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                    {% if request.user.is_staff %}
+                    <li><a href="{% url 'admin_dashboard' %}" style="color: var(--secondary); font-weight: bold;">Dashboard</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                {% if request.user.is_authenticated %}
+                    <span class="user-badge" title="{{ request.user.username }}">
+                        <i class="fas fa-user-circle"></i>
+                        <span class="username">{{ request.user.username }}</span>
+                    </span>
+                    <form action="{% url 'logout' %}" method="post" style="display:inline">{% csrf_token %}
+                        <button class="btn btn-login btn-hover-effect" type="submit">Logout</button>
+                    </form>
+                {% else %}
+                    <a class="btn btn-login btn-hover-effect" href="{% url 'login' %}" id="loginBtn">Login</a>
+                    <a class="btn btn-signup btn-hover-effect" href="{% url 'signup' %}" id="signupBtn">Sign Up</a>
+                {% endif %}
+                <button class="btn btn-secondary" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+    </div>
+</header>

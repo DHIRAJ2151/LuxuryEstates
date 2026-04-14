@@ -1,0 +1,38 @@
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>LuxuryEstates</h3>
+                <p>Find your dream home with our advanced property search and AI-powered price prediction technology.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/dhanraj_constructions?igsh=MWc1OWhqbHluNXhvZw==" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'properties' %}">Properties</a></li>
+                    <li><a href="{% url 'predictor:predict_price' %}">Price Prediction</a></li>
+                    <li><a href="{% url 'agents' %}">Agents</a></li>
+                    <li><a href="{% url 'sell' %}">Sell</a></li>
+                    <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Info</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> Pandharewasti, Karkamb, Solapur, MH 413302</li>
+                    <li><i class="fas fa-phone"></i> +91 90967 09624</li>
+                    <li><i class="fas fa-envelope"></i> info@luxuryestates.in</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; {% now "Y" %} LuxuryEstates. All rights reserved.</p>
+        </div>
+    </div>
+</footer>

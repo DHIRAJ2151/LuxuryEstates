@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% block title %}Sign Up • LuxuryEstates{% endblock %}
+{% block content %}
+<main class="page-bg light-overlay" style="min-height: 85vh; display: flex; align-items: center; justify-content: center; padding: 3rem 1rem;">
+  <section style="width: 100%; max-width: 550px;">
+    <div class="card" style="position: relative; overflow: hidden;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2 style="color: var(--primary); font-size: 2rem; margin-bottom: 0.5rem;">Create Account</h2>
+        <p style="color: var(--text-light);">Join LuxuryEstates to unlock premium features.</p>
+      </div>
+
+      {% if form.errors or error %}
+        <div style="background: white; border-left: 4px solid var(--secondary); padding: 1rem; border-radius: 4px; box-shadow: var(--shadow); margin-bottom: 1.5rem;">
+          {% if error %}
+            <div style="color: var(--secondary); font-weight: 600;"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+          {% endif %}
+          {% if form.non_field_errors %}
+            <div style="color: var(--secondary);">{{ form.non_field_errors }}</div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <form method="post" id="signupForm" novalidate>
+        {% csrf_token %}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName" name="first_name" placeholder="John" required />
+            <div class="invalid-feedback">First name is required</div>
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Doe" required />
+            <div class="invalid-feedback">Last name is required</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="id_username">Username</label>
+          <input type="text" class="form-control" id="id_username" name="username" placeholder="johndoe123" required />
+          <div class="invalid-feedback" id="usernameFeedback">Username must be alphanumeric and 3+ characters.</div>
+          {% if form.username.errors %}<small style="color: var(--secondary); margin-top:0.3rem;">{{ form.username.errors|striptags }}</small>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com" required />
+          <div class="invalid-feedback" id="emailFeedback">Please enter a valid email address.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" class="form-control" id="phone" name="phone" placeholder="+91 98765 43210" required />
+          <div class="invalid-feedback" id="phoneFeedback">Please enter a valid phone number (10-15 digits).</div>
+        </div>
+
+        <div class="form-group">
+          <label for="id_password1">Password</label>
+          <input type="password" class="form-control" id="id_password1" name="password1" placeholder="••••••••" autocomplete="new-password" required />
+          <div class="invalid-feedback" id="passwordFeedback">Password must be at least 8 chars, contain an uppercase, lowercase, number, and symbol.</div>
+          {% if form.password1.errors %}<small style="color: var(--secondary); margin-top:0.3rem;">{{ form.password1.errors|striptags }}</small>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="id_password2">Confirm Password</label>
+          <input type="password" class="form-control" id="id_password2" name="password2" placeholder="••••••••" autocomplete="new-password" required />
+          <div class="invalid-feedback" id="confirmFeedback">Passwords do not match.</div>
+          {% if form.password2.errors %}<small style="color: var(--secondary); margin-top:0.3rem;">{{ form.password2.errors|striptags }}</small>{% endif %}
+        </div>
+
+        <!-- Simulated success message container -->
+        <div id="successMessage" style="display:none; background: #e8f8f5; border-left: 4px solid var(--success); padding: 1rem; border-radius: 4px; color: #1e8449; margin-bottom: 1rem;">
+          <i class="fas fa-check-circle"></i> All fields look good! Submitting...
+        </div>
+
+        <button class="btn btn-primary" type="submit" id="submitBtn" style="margin-top: 1rem; width: 100%;">
+          <i class="fas fa-user-plus"></i> Create Account
+        </button>
+      </form>
+      
+      <div class="form-footer">
+        Already have an account? <a href="{% url 'login' %}">Login here</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('signupForm');
+  const uInput = document.getElementById('id_username');
+  const eInput = document.getElementById('email');
+  const phInput = document.getElementById('phone');
+  const p1Input = document.getElementById('id_password1');
+  const p2Input = document.getElementById('id_password2');
+  const submitBtn = document.getElementById('submitBtn');
+  const successMsg = document.getElementById('successMessage');
+
+  // Real-time validation
+  function validateField(input, regex, isMatchCheck = false, matchVal = '') {
+    if (isMatchCheck) {
+      if (input.value === matchVal && input.value.length > 0) {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        return true;
+      } else {
+        input.classList.remove('is-valid');
+        input.classList.add('is-invalid');
+        return false;
+      }
+    }
+
+    if (regex.test(input.value)) {
+      input.classList.remove('is-invalid');
+      input.classList.add('is-valid');
+      return true;
+    } else {
+      input.classList.remove('is-valid');
+      input.classList.add('is-invalid');
+      return false;
+    }
+  }
+
+  uInput.addEventListener('input', () => validateField(uInput, /^[a-zA-Z0-9_]{3,}$/));
+  eInput.addEventListener('input', () => validateField(eInput, /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/));
+  phInput.addEventListener('input', () => validateField(phInput, /^[\+0-9\s\-\(\)]{10,16}$/));
+  
+  // Password Strength: min 8 chars, 1 upper, 1 lower, 1 number, 1 special
+  const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  p1Input.addEventListener('input', () => {
+    validateField(p1Input, passRegex);
+    if(p2Input.value.length > 0) validateField(p2Input, null, true, p1Input.value);
+  });
+  
+  p2Input.addEventListener('input', () => validateField(p2Input, null, true, p1Input.value));
+
+  // Name fields basic validation
+  const fName = document.getElementById('firstName');
+  const lName = document.getElementById('lastName');
+  fName.addEventListener('input', () => validateField(fName, /^.+[a-zA-Z]$/));
+  lName.addEventListener('input', () => validateField(lName, /^.+[a-zA-Z]$/));
+
+  form.addEventListener('submit', function(e) {
+    let isValid = true;
+    if (!validateField(fName, /^.+[a-zA-Z]$/)) isValid = false;
+    if (!validateField(lName, /^.+[a-zA-Z]$/)) isValid = false;
+    if (!validateField(uInput, /^[a-zA-Z0-9_]{3,}$/)) isValid = false;
+    if (!validateField(eInput, /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) isValid = false;
+    if (!validateField(phInput, /^[\+0-9\s\-\(\)]{10,16}$/)) isValid = false;
+    if (!validateField(p1Input, passRegex)) isValid = false;
+    if (!validateField(p2Input, null, true, p1Input.value)) isValid = false;
+
+    if (!isValid) {
+      e.preventDefault();
+      // Focus first invalid element
+      const firstInvalid = form.querySelector('.is-invalid');
+      if(firstInvalid) firstInvalid.focus();
+    } else {
+      successMsg.style.display = 'block';
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+      submitBtn.disabled = true;
+      // Allow form to submit normally since isValid is true
+    }
+  });
+});
+</script>
+{% endblock %}
+{% endblock %}

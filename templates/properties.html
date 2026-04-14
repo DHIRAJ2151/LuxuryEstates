@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Properties • LuxuryEstates{% endblock %}
+{% block content %}
+<section class="container" style="padding: 2rem 0;">
+  <h2 class="section-title" style="color:#000">{% if q %}Results for "{{ q }}"{% else %}Latest Properties{% endif %}
+  </h2>
+  <div class="properties">
+    {% for p in properties %}
+    <div class="property-card">
+      <div class="property-img">
+        {% if p.image_url %}
+        <img src="{{ p.image_url }}" alt="{{ p.title }}" />
+        {% else %}
+        <img src="{% static 'house1.jpg' %}"
+          onerror="this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1170&q=80'"
+          alt="{{ p.title }}" />
+        {% endif %}
+      </div>
+      <div class="property-details">
+        <h3 class="property-price">₹ {{ p.price|floatformat:0 }}</h3>
+        <p class="property-address">{{ p.address }}, {{ p.city }} {{ p.zip }}</p>
+        <p>{{ p.title }}</p>
+        <div class="property-features">
+          <div class="feature"><i class="fas fa-bed"></i><span>{{ p.bedrooms }} Beds</span></div>
+          <div class="feature"><i class="fas fa-bath"></i><span>{{ p.bathrooms }} Baths</span></div>
+          <div class="feature"><i class="fas fa-ruler-combined"></i><span>{{ p.sqft }} sqft</span></div>
+        </div>
+        <button class="btn btn-outline info-toggle" type="button">Show Details</button>
+        <div class="more-info">
+          <ul class="details-list">
+            <li><strong>Type:</strong> {{ p.property_type }}</li>
+            <li><strong>Price:</strong> ₹ {{ p.price|floatformat:0 }}</li>
+            <li><strong>Bedrooms:</strong> {{ p.bedrooms }}</li>
+            <li><strong>Bathrooms:</strong> {{ p.bathrooms }}</li>
+            <li><strong>Square Feet:</strong> {{ p.sqft }}</li>
+            <li><strong>Address:</strong> {{ p.address }}, {{ p.city }} {{ p.zip }}</li>
+          </ul>
+          {% if p.description %}
+          <p class="details-desc">{{ p.description }}</p>
+          {% endif %}
+        </div>
+        <div class="property-actions">
+          <a href="{% url 'contact' %}?agent={{ p.title|urlencode }}" class="btn btn-contact">
+            <i class="fas fa-envelope"></i> Contact Agent
+          </a>
+          <a href="{% url 'schedule_visit' %}?title={{ p.title|urlencode }}&address={{ p.address|urlencode }}, {{ p.city|urlencode }}"
+            class="btn btn-schedule">
+            <i class="fas fa-calendar-check"></i> Schedule Visit
+          </a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+
+    <p style="color:#000">No properties yet. Be the first to <a href="{% url 'sell' %}">add a listing</a>.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="container" style="margin: 2rem auto 3rem; display:none;">
+  <h2 class="section-title">Find Properties Near You</h2>
+  <div class="card" style="padding:1rem;">
+    <div class="interactive-map" id="interactiveMap"></div>
+  </div>
+</section>
+{% block extra_js %}
+<script>
+  (function () {
+    const map = document.getElementById('interactiveMap');
+    if (!map) return;
+    map.querySelectorAll('.map-marker').forEach(m => {
+      m.addEventListener('click', () => {
+        const price = m.getAttribute('title') || 'Property';
+        alert('Listing: ' + price);
+      });
+    });
+  })();
+</script>
+{% endblock %}
+{% endblock %}

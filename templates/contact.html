@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% block title %}Contact Support • LuxuryEstates{% endblock %}
+{% block content %}
+<main style="padding: 4rem 1rem;">
+  <section class="container" style="max-width: 1000px;">
+    <div style="text-align: center; margin-bottom: 4rem;">
+        <h2 style="color: var(--primary); font-size: 2.8rem; margin-bottom: 0.8rem; font-weight: 800; letter-spacing: -0.5px;">Let's Start a Conversation</h2>
+        <p style="color: var(--text-light); max-width: 600px; margin: 0 auto; font-size: 1.15rem; line-height: 1.7;">
+            Whether you're looking to acquire, list, or just explore the luxury real estate market, our expert concierges are ready to assist you.
+        </p>
+    </div>
+
+    <!-- Agent Context Box -->
+    <div id="agent-context" style="display:none; max-width: 800px; margin: 0 auto 3rem auto; padding: 1.2rem 2rem; border-radius: 12px; background: linear-gradient(135deg, #f0f7ff, #e0efff); color: #024da1; font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,0.03); align-items: center; gap: 1rem; border: 1px solid #dbeafe;">
+        <i class="fas fa-user-tie" style="font-size: 1.5rem; opacity: 0.8;"></i>
+        <span id="agent-context-text"></span>
+    </div>
+
+    <div class="contact-grid" style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; align-items: stretch;">
+      <!-- Contact Info Card -->
+      <div class="card" style="background: linear-gradient(135deg, var(--primary), var(--dark)); color: white; border: none; display: flex; flex-direction: column; justify-content: space-between; padding: 3rem;">
+        <div>
+            <h3 style="font-size: 2rem; margin-bottom: 1rem; font-weight: 700;"><i class="fas fa-globe-americas" style="font-size: 1.6rem; opacity: 0.7; margin-right: 0.5rem;"></i> Global Reach</h3>
+            <p style="color: rgba(255,255,255,0.7); margin-bottom: 3rem; font-size: 1.05rem;">Experience unparalleled service across our international network.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <div style="display: flex; align-items: flex-start; gap: 1.2rem;">
+                    <div style="background: rgba(255,255,255,0.1); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;">
+                        <i class="fas fa-location-dot"></i>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 0.3rem; font-size: 1.15rem; font-weight: 600;">Main Office</h4>
+                        <p style="color: rgba(255,255,255,0.7); margin: 0; line-height: 1.5;">Pandharewasti, Karkamb,<br>Pandharpur Tembhurni Road,<br>Maharashtra 413302</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; gap: 1.2rem;">
+                    <div style="background: rgba(255,255,255,0.1); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 0.3rem; font-size: 1.15rem; font-weight: 600;">Reservations</h4>
+                        <p style="color: rgba(255,255,255,0.7); margin: 0; line-height: 1.5;">+91 90967 09624<br>Available Mon-Sat, 9AM-7PM</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; gap: 1.2rem;">
+                    <div style="background: rgba(255,255,255,0.1); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 0.3rem; font-size: 1.15rem; font-weight: 600;">Concierge</h4>
+                        <p style="color: rgba(255,255,255,0.7); margin: 0; line-height: 1.5;">concierge@luxuryestates.in<br>support@luxuryestates.in</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 4rem;">
+            <div style="display: flex; gap: 1.2rem;">
+                <a href="#" style="color: white; background: rgba(255,255,255,0.1); width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; border-radius: 50%; transition: all 0.3s ease; text-decoration: none;"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" style="color: white; background: rgba(255,255,255,0.1); width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; border-radius: 50%; transition: all 0.3s ease; text-decoration: none;"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/dhanraj_constructions?igsh=MWc1OWhqbHluNXhvZw==" target="_blank" style="color: white; background: rgba(255,255,255,0.1); width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; border-radius: 50%; transition: all 0.3s ease; text-decoration: none;"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+      </div>
+
+      <!-- Contact Form Card -->
+      <div class="card card-glass" style="padding: 3rem; border: 1px solid rgba(255,255,255,0.5);">
+        <h3 style="font-size: 2rem; margin-bottom: 0.8rem; color: var(--primary); font-weight: 700;">Inquire Now</h3>
+        <p style="color: var(--text-light); margin-bottom: 2.5rem; font-size: 1.05rem;">Complete the information below and a specialist will be in touch shortly.</p>
+        
+        <form id="contactForm" method="POST" action="{% url 'contact' %}" novalidate>
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="E.g. Alexander Hamilton" required />
+            <div class="invalid-feedback">Please enter your full name.</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="alex@example.com" required />
+            <div class="invalid-feedback">Please enter a valid business email.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number (Optional)</label>
+            <input type="tel" class="form-control" id="phone" name="phone" placeholder="+91 98765 43210" />
+            <div class="invalid-feedback">Please enter a valid contact number.</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="msg">Message</label>
+            <textarea class="form-control" id="msg" name="message" rows="5" placeholder="How may we assist you with your luxury real estate needs?" required></textarea>
+            <div class="invalid-feedback">A message is required for inquiry.</div>
+          </div>
+          
+          <!-- Success Alert -->
+          <div id="contactSuccess" style="display:none; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 1.2rem; border-radius: 8px; color: #166534; margin-bottom: 1.5rem; align-items: center; gap: 0.8rem; box-shadow: 0 4px 12px rgba(22,101,52,0.05);">
+            <i class="fas fa-circle-check" style="font-size: 1.4rem;"></i>
+            <span style="font-weight: 500;">Your inquiry has been received. Our team will contact you within 24 hours.</span>
+          </div>
+
+          <button class="btn btn-primary btn-hover-effect" type="submit" id="contactSubmitBtn" style="width: 100%; font-size: 1.2rem; padding: 1.1rem; border-radius: 8px; background: linear-gradient(135deg, var(--secondary), #c0392b);">
+            <i class="fas fa-paper-plane" style="font-size: 1rem;"></i> Send Inquiry
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Agent Context Logic
+  try{
+    const params = new URLSearchParams(window.location.search);
+    const agent = params.get('agent');
+    if(agent){
+      const note = document.getElementById('agent-context');
+      const noteTxt = document.getElementById('agent-context-text');
+      if(note && noteTxt){
+        note.style.display = 'flex';
+        noteTxt.textContent = `You are contacting: ${agent}`;
+      }
+      const msg = document.getElementById('msg');
+      if(msg && !msg.value){
+        msg.value = `Hi ${agent}, I am interested in your luxury real estate services. Please get in touch with me regarding premium listings.\n\nThank you.`;
+      }
+    }
+  }catch(e){}
+
+  // Form Validation and Submission
+  const form = document.getElementById('contactForm');
+  const nInput = document.getElementById('name');
+  const eInput = document.getElementById('email');
+  const phInput = document.getElementById('phone');
+  const mInput = document.getElementById('msg');
+  const submitBtn = document.getElementById('contactSubmitBtn');
+  const successMsg = document.getElementById('contactSuccess');
+
+  function validateField(input, regex = null) {
+    if (input.value.trim().length === 0 && input.required) {
+      input.classList.remove('is-valid');
+      input.classList.add('is-invalid');
+      return false;
+    }
+    
+    if (regex && input.value.trim().length > 0) {
+      if (regex.test(input.value)) {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        return true;
+      } else {
+        input.classList.remove('is-valid');
+        input.classList.add('is-invalid');
+        return false;
+      }
+    } else if (input.value.trim().length > 0) {
+      input.classList.remove('is-invalid');
+      input.classList.add('is-valid');
+      return true;
+    } else {
+      input.classList.remove('is-invalid');
+      input.classList.remove('is-valid');
+      return true;
+    }
+  }
+
+  nInput.addEventListener('input', () => validateField(nInput));
+  eInput.addEventListener('input', () => validateField(eInput, /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/));
+  phInput.addEventListener('input', () => validateField(phInput, /^[\+0-9\s\-\(\)]{10,16}$/));
+  mInput.addEventListener('input', () => validateField(mInput));
+
+  let isSubmitting = false;
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    let isValid = true;
+    if (!validateField(nInput)) isValid = false;
+    if (!validateField(eInput, /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) isValid = false;
+    if (phInput.value.length > 0 && !validateField(phInput, /^[\+0-9\s\-\(\)]{10,16}$/)) isValid = false;
+    if (!validateField(mInput)) isValid = false;
+
+    if (!isValid) {
+      const firstInvalid = form.querySelector('.is-invalid');
+      if(firstInvalid) firstInvalid.focus();
+    } else {
+      isSubmitting = true;
+      submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
+      submitBtn.disabled = true;
+      
+      const formData = new FormData(form);
+      
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          form.reset();
+          [nInput, eInput, phInput, mInput].forEach(inp => {
+            inp.classList.remove('is-valid');
+            inp.classList.remove('is-invalid');
+          });
+          successMsg.style.display = 'flex';
+          submitBtn.innerHTML = '<i class="fas fa-check"></i> Inquiry Sent';
+          
+          setTimeout(() => {
+            successMsg.style.display = 'none';
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Inquiry';
+            submitBtn.disabled = false;
+            isSubmitting = false;
+          }, 4000);
+        } else {
+          alert(data.error || 'Inquiry could not be sent. Please retry.');
+          submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Inquiry';
+          submitBtn.disabled = false;
+          isSubmitting = false;
+        }
+      })
+      .catch(error => {
+        console.error('Submission Error:', error);
+        alert('A network error occurred. Please check your connection.');
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Inquiry';
+        submitBtn.disabled = false;
+        isSubmitting = false;
+      });
+    }
+  });
+});
+</script>
+{% endblock %}
+{% endblock %}
